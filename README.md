@@ -77,7 +77,7 @@ pip install -r requirements.txt
 4. Set up your environment variables:
 ```bash
 cp .env.example .env #Copy the example env
-# Edit the .env with and replace with the values provided during the interview
+# Edit the .env and replace with the values provided during the interview
 ```
 
 5. Verify setup:
