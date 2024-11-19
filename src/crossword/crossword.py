@@ -32,8 +32,15 @@ class CrosswordPuzzle(BaseModel):
 
     def add_clue(self, clue: Clue) -> None:
         """Add a new clue to the puzzle"""
+        
+        # check for unqiue id
+        if any(c.number == clue.number for c in self.clues):
+            raise InvalidClueError(f"Clue with number {clue.number} already exists")
+
+        # check for valid position                     
         if not self._validate_clue_chars_position(clue):
             raise InvalidClueError(f"Clue {clue.number} position is invalid")
+                              
         self.clues.append(clue)
 
     def _validate_clue_chars_position(self, clue: Clue) -> bool:
@@ -56,6 +63,9 @@ class CrosswordPuzzle(BaseModel):
         """Fill in characters for a given clue"""
         if len(chars) != clue.length:
             raise InvalidClueError(f"Expected {clue.length} characters, got {len(chars)}")
+
+        # Make all chars uppercase
+        chars = [char.upper() for char in chars]
 
         # Create new grid based on current state
         new_grid = self.current_grid.model_copy(deep=True)
@@ -86,10 +96,6 @@ class CrosswordPuzzle(BaseModel):
         return [
             clue for clue in self.clues if row in clue.cells() and col in clue.cells()
         ]
-
-    def get_clashing_clues(self, clue: Clue) -> List[Clue]:
-        """Get all clues that clash with a specific clue"""
-        return [c for c in self.clues if set(clue.cells()) & set(c.cells())]
 
     def validate_clue_chars(self, clue: Clue) -> bool:
         """Check if the current entry for a clue is correct"""
