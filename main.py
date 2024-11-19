@@ -7,7 +7,7 @@ from src.crossword.utils import load_puzzle
 load_dotenv()
 
 # Load the puzzle
-puzzle = load_puzzle("data/first.puz")
+puzzle = load_puzzle("data/easy.puz")
 
 print('--- Clues ---')
 clue = puzzle.clues[0]
@@ -17,39 +17,39 @@ print('--- Set a guess ---')
 puzzle.set_clue_chars(puzzle.clues[0], ["a", "b", "c"])
 print(puzzle)
 
-print('--- Entry is correct? ---')
-print(puzzle.validate_clue_chars(clue))
-
 print('--- Undo ---')
 puzzle.undo()
 print(puzzle)
 
-print('--- Reveal Clue ---')
-puzzle.reveal_clue_answer(clue)
-print(puzzle)
+print('--- Set a guess for clue 1 ---')
+puzzle.set_clue_chars(puzzle.clues[0], ["c", "a", "t"])
 
-print('--- Entry is correct? ---')
-print(puzzle.validate_clue_chars(clue))
-
-print('--- Completed all? ---')
-print(puzzle.validate_all())
-
-print('--- Reveal All ---')
-puzzle.reveal_all()
-print(puzzle)
+print('--- Set a guess for clue 2 ---')
+puzzle.set_clue_chars(puzzle.clues[1], ["c", "o", "w"])
 
 print('--- Completed all? ---')
 print(puzzle.validate_all())
+print(puzzle)
+
+print('--- Set a guess for clue 3 ---')
+puzzle.set_clue_chars(puzzle.clues[2], ["t", "e", "a","r"])
+
+print('--- Completed all? ---')
+print(puzzle.validate_all())
+print(puzzle)
 
 print('--- Reset ---')
 puzzle.reset()
 print(puzzle)
+
+# grid history
 
 print('--- OpenAI Hello World ---')
 def openai_hello_world():
     client = AzureOpenAI(
         api_version=os.getenv("OPENAI_API_VERSION"),
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        api_key=os.getenv("OPENAI_API_KEY")
     )
     response = client.chat.completions.create(
         model="gpt-4o",
