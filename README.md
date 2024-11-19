@@ -59,7 +59,7 @@ The crossword answers are included with the puzzles to help you validate your so
 
 1. Clone this repository:
 ```bash
-git clone <repo>
+git clone https://github.com/gavinedwards-ai/llm-crossword.git
 cd llm-crossword
 ```
 
