@@ -102,12 +102,12 @@ class TestCrosswordPuzzle:
         with pytest.raises(InvalidClueError):
             puzzle.add_clue(invalid_position)
 
-    def test_set_chars(self, puzzle):
+    def test_set_clue_chars(self, puzzle):
         # Test setting first across clue
         clue = puzzle.clues[0]  # "CAT" across
-        puzzle.set_chars(clue, list("CAT"))
+        puzzle.set_clue_chars(clue, list("CAT"))
         
-        chars = puzzle.get_chars(clue)
+        chars = puzzle.get_current_clue_chars(clue)
         assert chars == list("CAT")
         assert puzzle.clues[0].answered is True
         assert len(puzzle.grid_history) == 2
@@ -115,16 +115,16 @@ class TestCrosswordPuzzle:
 
         # Test setting invalid length
         with pytest.raises(InvalidClueError):
-            puzzle.set_chars(clue, list("TOOLONG"))
+            puzzle.set_clue_chars(clue, list("TOOLONG"))
 
-    def test_get_chars(self, puzzle):
+    def test_get_current_clue_chars(self, puzzle):
         # Initially all cells should be None
         clue = puzzle.clues[0]  # "CAT" across
-        assert puzzle.get_chars(clue) == [None, None, None]
+        assert puzzle.get_current_clue_chars(clue) == [None, None, None]
 
         # Set some characters and verify
-        puzzle.set_chars(clue, list("CAT"))
-        assert puzzle.get_chars(clue) == list("CAT")
+        puzzle.set_clue_chars(clue, list("CAT"))
+        assert puzzle.get_current_clue_chars(clue) == list("CAT")
 
         # Test getting chars for non-existent clue
         invalid_clue = Clue(
@@ -137,15 +137,15 @@ class TestCrosswordPuzzle:
             answer="BAD"
         )
         with pytest.raises(InvalidClueError):
-            puzzle.get_chars(invalid_clue)
+            puzzle.get_current_clue_chars(invalid_clue)
 
     def test_undo(self, puzzle):
         raise NotImplementedError
 
     def test_reset(self, puzzle):
         # Make some moves
-        puzzle.set_chars(puzzle.clues[0], list("CAT"))
-        puzzle.set_chars(puzzle.clues[1], list("COW"))
+        puzzle.set_clue_chars(puzzle.clues[0], list("CAT"))
+        puzzle.set_clue_chars(puzzle.clues[1], list("COW"))
 
         # Verify initial state
         assert len(puzzle.grid_history) == 3
@@ -159,15 +159,15 @@ class TestCrosswordPuzzle:
         assert len(puzzle.clue_history) == 0
         assert puzzle.clues[0].answered is False
         assert puzzle.clues[1].answered is False
-        assert all(char is None for char in puzzle.get_chars(puzzle.clues[0]))
-        assert all(char is None for char in puzzle.get_chars(puzzle.clues[1]))
+        assert all(char is None for char in puzzle.get_current_clue_chars(puzzle.clues[0]))
+        assert all(char is None for char in puzzle.get_current_clue_chars(puzzle.clues[1]))
 
-    def test_reveal_clue(self, puzzle):
+    def test_reveal_clue_answer(self, puzzle):
         clue = puzzle.clues[0]  # "CAT" across
         
         # Reveal clue
-        puzzle.reveal_clue(clue)
-        assert puzzle.get_chars(clue) == list("CAT")
+        puzzle.reveal_clue_answer(clue)
+        assert puzzle.get_current_clue_chars(clue) == list("CAT")
         assert clue.answered is True
 
         # Test revealing clue with no answer
@@ -181,7 +181,7 @@ class TestCrosswordPuzzle:
             answer=None
         )
         with pytest.raises(InvalidClueError):
-            puzzle.reveal_clue(no_answer_clue)
+            puzzle.reveal_clue_answer(no_answer_clue)
 
     def test_reveal_all(self, puzzle):
         # Reveal all clues
@@ -190,7 +190,7 @@ class TestCrosswordPuzzle:
         # Verify all clues are answered with correct answers
         for clue in puzzle.clues:
             assert clue.answered is True
-            assert puzzle.get_chars(clue) == list(clue.answer)
+            assert puzzle.get_current_clue_chars(clue) == list(clue.answer)
 
         # Verify grid state
         current_grid = puzzle.current_grid

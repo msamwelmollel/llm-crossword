@@ -31,18 +31,20 @@ class CrosswordPuzzle(BaseModel):
         return self.grid_history[-1]
 
     def add_clue(self, clue: Clue) -> None:
-        if not self._validate_clue_position(clue):
+        """Add a new clue to the puzzle"""
+        if not self._validate_clue_chars_position(clue):
             raise InvalidClueError(f"Clue {clue.number} position is invalid")
         self.clues.append(clue)
 
-    def _validate_clue_position(self, clue: Clue) -> bool:
+    def _validate_clue_chars_position(self, clue: Clue) -> bool:
+        """Check if the clue position is valid"""
         if not (0 <= clue.row < self.height and 0 <= clue.col < self.width):
             return False
         if clue.direction == Direction.ACROSS:
             return clue.col + clue.length <= self.width
         return clue.row + clue.length <= self.height
 
-    def get_chars(self, clue: Clue) -> List[Optional[str]]:
+    def get_current_clue_chars(self, clue: Clue) -> List[Optional[str]]:
         """Get current characters in the grid for a given clue"""     
         if clue not in self.clues:
             raise InvalidClueError("Clue not found in puzzle")
@@ -50,7 +52,7 @@ class CrosswordPuzzle(BaseModel):
         return [self.current_grid.cells[row][col].value 
                 for row, col in clue.cells()]
 
-    def set_chars(self, clue: Clue, chars: List[str]) -> None:
+    def set_clue_chars(self, clue: Clue, chars: List[str]) -> None:
         """Fill in characters for a given clue"""
         if len(chars) != clue.length:
             raise InvalidClueError(f"Expected {clue.length} characters, got {len(chars)}")
@@ -66,7 +68,39 @@ class CrosswordPuzzle(BaseModel):
         clue.answered = True
         self.clue_history.append(self.clues.index(clue))
 
+    def reveal_clue_answer(self, clue: Clue) -> None:
+        """Reveal the answer for a specific clue"""
+        if not clue.answer:
+            raise InvalidClueError("No answer available for this clue")
+            
+        self.set_clue_chars(clue, list(clue.answer))
+
+    def reveal_all(self) -> None:
+        """Reveal all answers in the puzzle"""
+        for clue in self.clues:
+            if not clue.answered and clue.answer:
+                self.reveal_clue_answer(clue)
+
+    def get_clues_overlapping_with_cell(self, row: int, col: int) -> List[Clue]:
+        """Get all clues that overlap with a specific cell"""
+        return [
+            clue for clue in self.clues if row in clue.cells() and col in clue.cells()
+        ]
+
+    def get_clashing_clues(self, clue: Clue) -> List[Clue]:
+        """Get all clues that clash with a specific clue"""
+        return [c for c in self.clues if set(clue.cells()) & set(c.cells())]
+
+    def validate_clue_chars(self, clue: Clue) -> bool:
+        """Check if the current entry for a clue is correct"""
+        return self.get_current_clue_chars(clue) == list(clue.answer)
+    
+    def validate_all(self) -> bool:
+        """Check if all entries in the puzzle are correct"""
+        return all(self.validate_clue_chars(clue) for clue in self.clues if clue.answer)
+
     def undo(self) -> None:
+        """Undo the last move"""
         if len(self.grid_history) <= 1:
             raise InvalidGridError("No moves to undo")
         self.grid_history.pop()
@@ -79,26 +113,7 @@ class CrosswordPuzzle(BaseModel):
         self.clue_history = []
         for clue in self.clues:
             clue.answered = False
-
-    def reveal_clue(self, clue: Clue) -> None:
-        """Reveal the answer for a specific clue"""
-        if not clue.answer:
-            raise InvalidClueError("No answer available for this clue")
             
-        self.set_chars(clue, list(clue.answer))
-
-    def reveal_all(self) -> None:
-        """Reveal all answers in the puzzle"""
-        for clue in self.clues:
-            if not clue.answered and clue.answer:
-                self.reveal_clue(clue)
-
-    def validate_clue(self, clue: Clue) -> bool:
-        return self.get_chars(clue) == list(clue.answer)
-    
-    def validate_all(self) -> bool:
-        return all(self.validate_clue(clue) for clue in self.clues if clue.answer)
-
     def __repr__(self):
         return f"<CrosswordPuzzle width={self.width} height={self.height} clues={len(self.clues)}>"
     
