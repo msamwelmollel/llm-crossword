@@ -18,74 +18,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def create_cat_cow_puzzle():
-    """
-    Creates a 5x5 puzzle with this layout:
-    C A T - -
-    O - E - -
-    W - A - -
-    - - R - -
-    - - - - -
-    """
-    # Initialize creator
-    creator = CrosswordCreator(
-        width=5,
-        height=5,
-        title="Cat and Cow Puzzle",
-        author="Crossword Creator"
-    )
-    
-    # Add the entries
-    # 1. CAT going across
-    creator.add_entry(
-        number=1,
-        direction=Direction.ACROSS,
-        clue_text="Feline friend",
-        answer="CAT",
-        row=0,
-        col=0
-    )
-    
-    # 2. COW going down
-    creator.add_entry(
-        number=1,
-        direction=Direction.DOWN,
-        clue_text="Dairy farm animal",
-        answer="COW",
-        row=0,
-        col=0
-    )
-    
-    # 3. TEAR going down
-    creator.add_entry(
-        number=2,
-        direction=Direction.DOWN,
-        clue_text="A drop of sadness",
-        answer="TEAR",
-        row=0,
-        col=2
-    )
-    
-    # Create and save the puzzle
-    creator.create_puzzle()
-    creator.save_puzzle()
-    
-    # Print the grid for visualization
-    print("\nCrossword Grid:")
-    print("-" * 11)
-    for i in range(creator.grid.height):
-        print("|", end=" ")
-        for j in range(creator.grid.width):
-            cell = creator.grid.cells[i][j]
-            print(cell.value if cell.value else "-", end=" ")
-        print("|")
-    print("-" * 11)
-    
-    # Print the clues
-    print("\nClues:")
-    for clue in creator.clues:
-        print(f"{clue.number}{clue.direction.value[0].upper()}. {clue.text}")
-
 class CrosswordCreator:
     """Creates and manages crossword puzzles in .puz format."""
     
@@ -197,5 +129,155 @@ class CrosswordCreator:
         self.puzzle.save(str(output_path))
         logger.info(f"Successfully saved puzzle to {output_path}")
 
+    def print_grid(self) -> None:
+        """
+        Print the crossword grid.
+        """
+        print("\nCrossword Grid:")
+        print("-" * (self.grid.width * 2 + 1))
+        for i in range(self.grid.height):
+            print("|", end=" ")
+            for j in range(self.grid.width):
+                cell = self.grid.cells[i][j]
+                print(cell.value if cell.value else "-", end=" ")
+            print("|")
+        print("-" * (self.grid.width * 2 + 1))
+
+def create_cat_cow_puzzle():
+    """
+    Creates a puzzle with this layout:
+    C A T - -
+    O - E - -
+    W - A - -
+    - - R - -
+    - - - - -
+    """
+    # Initialize creator
+    creator = CrosswordCreator(
+        width=5,
+        height=5,
+        title="Cat and Cow Puzzle",
+        author="Crossword Creator"
+    )
+    
+    # Across entries
+    # Add the entries
+    # 1. CAT going across
+    creator.add_entry(
+        number=1,
+        direction=Direction.ACROSS,
+        clue_text="Feline friend",
+        answer="CAT",
+        row=0,
+        col=0
+    )
+    
+    # Down entries
+    # 2. COW going down
+    creator.add_entry(
+        number=1,
+        direction=Direction.DOWN,
+        clue_text="Dairy farm animal",
+        answer="COW",
+        row=0,
+        col=0
+    )
+    
+    # 3. TEAR going down
+    creator.add_entry(
+        number=2,
+        direction=Direction.DOWN,
+        clue_text="A drop of sadness",
+        answer="TEAR",
+        row=0,
+        col=2
+    )
+    
+    # Create and save the puzzle
+    creator.create_puzzle()
+    creator.save_puzzle()
+    
+    # Print the grid for visualization
+    print("\nCrossword Grid:")
+    creator.print_grid()
+    
+    # Print the clues
+    print("\nClues:")
+    for clue in creator.clues:
+        print(f"{clue.number}{clue.direction.value[0].upper()}. {clue.text}")
+
+def create_book_puzzle():
+    """
+    Creates a puzzle with literary theme
+    """
+    creator = CrosswordCreator(
+        width=7,
+        height=7,
+        title="Literary Crossword",
+        author="Crossword Creator"
+    )
+    
+    # Add across entries
+    creator.add_entry(
+        number=1,
+        direction=Direction.ACROSS,
+        clue_text="A long narrative poem",
+        answer="EPIC",
+        row=0,
+        col=0
+    )
+    
+    creator.add_entry(
+        number=2,
+        direction=Direction.ACROSS,
+        clue_text="A person who writes books",
+        answer="AUTHOR",
+        row=3,
+        col=1
+    )
+
+    # Add down entries
+
+    creator.add_entry(
+        number=1,
+        direction=Direction.DOWN,
+        clue_text="A short story with a moral lesson",
+        answer="PARABLE",
+        row=0,
+        col=1
+    )
+    
+    creator.add_entry(
+        number=2,
+        direction=Direction.DOWN,
+        clue_text="A book's outer casing",
+        answer="COVER",
+        row=2,
+        col=5
+    )
+    
+    creator.add_entry(
+        number=3,
+        direction=Direction.DOWN,
+        clue_text="A narrative tale",
+        answer="STORY",
+        row=2,
+        col=3
+    )
+
+    # Create and save puzzle
+    creator.create_puzzle()
+    creator.save_puzzle()
+    
+    # Print visualization
+    print("\nCrossword Grid:")
+    creator.print_grid()
+
+    print("\nClues:")
+    for clue in creator.clues:
+        print(f"{clue.number}{clue.direction.value[0].upper()}. {clue.text}")
+
+
 if __name__ == "__main__":
     create_cat_cow_puzzle()
+    create_book_puzzle()
