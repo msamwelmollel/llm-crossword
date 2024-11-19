@@ -28,7 +28,7 @@ When the interview is over please send a zip file of your code to the interviewe
 * **AI assisted coding**: Allowed ✅ 
 
 #### Tasks 
-##### Task 1. Build an LLM powered crossword puzzle solver for `data/first.puz`
+##### Task 1. Build an LLM powered crossword puzzle solver for `data/easy.puz`
 
 The solver should:
 1. Read the clues and provide possible answers
@@ -36,9 +36,9 @@ The solver should:
 3. Return a completed crossword as a result
 
 #### Task 2. Try to extend your solution to work for the other crosswords
-* The easy puzzle in `data/easy.puz`
 * The medium puzzle in `data/medium.puz`
 * The hard puzzle in `data/hard.puz`
+* The cryptic puzzle in `data/cryptic.puz`
 
 We provide a `main.py` script to help you get started. However, you can structure your code whichever way you think is best. We also provide a `scratchpad.ipynb` notebook to help you experiment with trying different solutions.
 
