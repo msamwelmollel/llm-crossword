@@ -3,6 +3,15 @@ from dotenv import load_dotenv
 from openai import AzureOpenAI
 from src.crossword.utils import load_puzzle
 
+'''
+# install the requirements 
+1. pip install -r requirements.txt
+2. set the env variable
+
+
+
+'''
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -43,6 +52,7 @@ puzzle.reset()
 print(puzzle)
 
 # grid history
+
 
 print('--- OpenAI Hello World ---')
 def openai_hello_world():
