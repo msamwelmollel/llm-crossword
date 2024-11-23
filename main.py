@@ -6,7 +6,7 @@ from src.crossword.utils import load_puzzle
 '''
 # install the requirements 
 1. pip install -r requirements.txt
-2. set the env variable
+2. sr
 
 
 
