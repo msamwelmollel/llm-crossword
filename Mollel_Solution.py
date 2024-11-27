@@ -8,9 +8,7 @@ from src.crossword.utils import load_puzzle
 load_dotenv()
 
 # Load the puzzle
-puzzle = load_puzzle("data/easy.puz")
-
-
+puzzle = load_puzzle("data/medium.puz")
 
 
 def extract_word_from_response(response_text, length):
@@ -29,13 +27,10 @@ def extract_word_from_response(response_text, length):
         raise ValueError(f"Could not find a {length}-letter word in response: {response_text}")
 
         
-        
 def validate_word_placement(clue, word):
     if len(word) != clue.length:
         raise ValueError(f"Word length mismatch: Expected {clue.length}, got {len(word)}.")
     # Additional validation can include checking grid boundaries, overlapping words, etc.
-
-
 
 
 def get_answer_to_clue(clue):
@@ -52,7 +47,7 @@ def get_answer_to_clue(clue):
                 {"role": "system", "content": "You are a helpful assistant that solves crossword clues."},
                 {"role": "user", "content": f"Provide a {clue.length}-letter word that fits the clue: '{clue.text}'. Only return the word, nothing else."}
             ],
-            max_tokens=50,
+            max_tokens=100,
             temperature=0.1
         )
         raw_response = response.choices[0].message.content.strip()
